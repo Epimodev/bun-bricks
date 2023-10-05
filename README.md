@@ -149,7 +149,7 @@ import {
 const server = Bun.serve({
   port: 3000,
   async fetch(request) {
-    // returns undefined if
+    // returns undefined if all handlers return undefined
     const response = handleRequest(request);
     return response ?? new Response("Not found", { status: 404 });
   },
