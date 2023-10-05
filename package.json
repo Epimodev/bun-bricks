@@ -1,7 +1,7 @@
 {
-  "name": "bun-bricks",
+  "name": "@epimodev/bun-bricks",
   "module": "src/index.ts",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "type": "module",
   "scripts": {
     "prepare": "git config --local core.hooksPath .hooks",
