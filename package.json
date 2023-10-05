@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "prepare": "git config --local core.hooksPath .hooks",
+    "typecheck": "tsc --noEmit",
     "format": "prettier --ignore-unknown --write ."
   },
   "lint-staged": {
