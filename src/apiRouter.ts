@@ -1,5 +1,5 @@
 import k from "kleur";
-import { decodeSearch, parseJsonSafe } from "./requestUtils";
+import { decodeSearch, parseCookies, parseJsonSafe } from "./requestUtils";
 import { ApiHandler, RequestInputs } from "./types";
 
 /* ========================================================== */
@@ -130,6 +130,7 @@ export const createApiRouterRequestHandler =
     }
 
     const contentType = request.headers.get("content-type");
+    const cookies = parseCookies(request);
     const query = decodeSearch(url.searchParams);
     const body = contentType === "application/json" ? await parseJsonSafe(request) : null;
 
@@ -137,7 +138,7 @@ export const createApiRouterRequestHandler =
       params: matchedRoute.params,
       query,
       body,
-      cookies: {},
+      cookies,
       headers: request.headers,
       publish,
     };

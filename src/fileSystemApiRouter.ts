@@ -1,7 +1,7 @@
 import k from "kleur";
 import { readdir, stat } from "node:fs/promises";
 import { resolve } from "node:path";
-import { decodeSearch, parseJsonSafe } from "./requestUtils";
+import { decodeSearch, parseCookies, parseJsonSafe } from "./requestUtils";
 import { ApiHandler, RequestInputs } from "./types";
 
 type FileSystemApiRouterParams = {
@@ -74,6 +74,7 @@ export const createFileSystemApiRouterRequestHandler =
     }
 
     const contentType = request.headers.get("content-type");
+    const cookies = parseCookies(request);
     const query = decodeSearch(url.searchParams);
     const body = contentType === "application/json" ? await parseJsonSafe(request) : null;
 
@@ -81,7 +82,7 @@ export const createFileSystemApiRouterRequestHandler =
       params: {},
       query,
       body,
-      cookies: {},
+      cookies,
       headers: request.headers,
       publish,
     };
