@@ -1,7 +1,8 @@
 type Literal = string | number | boolean | null;
 type Json = Literal | { [key: string]: Json } | Json[];
 
-export type RequestInputs = {
+export type RequestInputs<PathParams = Record<string, string>> = {
+  params: PathParams;
   query: Record<string, string | string[]>;
   body: Json;
   cookies: Record<string, string>;
@@ -15,4 +16,6 @@ export type HandlerOutput = {
   headers?: Record<string, string>;
 };
 
-export type ApiHandler = (request: RequestInputs) => HandlerOutput | Promise<HandlerOutput>;
+export type ApiHandler<PathParams = Record<string, string>> = (
+  request: RequestInputs<PathParams>,
+) => HandlerOutput | Promise<HandlerOutput>;

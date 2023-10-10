@@ -1,3 +1,4 @@
+export * from "./apiRouter";
 export * from "./fileSystemApiRouter";
 export * from "./logger";
 export * from "./requestHandler";

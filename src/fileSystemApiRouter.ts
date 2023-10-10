@@ -1,6 +1,7 @@
 import k from "kleur";
 import { readdir, stat } from "node:fs/promises";
 import { resolve } from "node:path";
+import { decodeSearch, parseJsonSafe } from "./requestUtils";
 import { ApiHandler, RequestInputs } from "./types";
 
 type FileSystemApiRouterParams = {
@@ -53,7 +54,7 @@ export const createFileSystemApiRouter = async ({
     match: (pathname: string): MatchedApiRoute | undefined => paths[pathname],
     list: () => Object.keys(paths),
     logRoutes: () => {
-      console.log(k.yellow("Available API routes:"));
+      console.log(k.yellow("Available File API routes:"));
       Object.keys(paths).forEach(route => {
         console.log(`- ${k.green(route)}`);
       });
@@ -61,15 +62,7 @@ export const createFileSystemApiRouter = async ({
   };
 };
 
-const parseJsonSafe = async (request: Request): Promise<any> => {
-  try {
-    return await request.json();
-  } catch {
-    return null;
-  }
-};
-
-export const createApiRouterRequestHandler =
+export const createFileSystemApiRouterRequestHandler =
   (router: FileSystemApiRouter, publish: (channel: string, message: string) => number) =>
   async (request: Request): Promise<Response | undefined> => {
     const url = new URL(request.url);
@@ -85,6 +78,7 @@ export const createApiRouterRequestHandler =
     const body = contentType === "application/json" ? await parseJsonSafe(request) : null;
 
     const inputs: RequestInputs = {
+      params: {},
       query,
       body,
       cookies: {},
@@ -132,21 +126,4 @@ const getApiPaths = async (rootFolder: string): Promise<string[]> => {
   };
 
   return aggregatePaths([rootFolder]);
-};
-
-// Copied from https://github.com/swan-io/chicane/blob/main/src/search.ts#L3C1-L21C3
-const decodeSearch = (params: URLSearchParams): Record<string, string | string[]> => {
-  const output: Record<string, string | string[]> = {};
-
-  for (const [key, value] of params) {
-    const existing = output[key];
-
-    if (existing != null) {
-      output[key] = typeof existing === "string" ? [existing, value] : existing.concat(value);
-    } else {
-      output[key] = value;
-    }
-  }
-
-  return output;
 };
