@@ -124,7 +124,7 @@ export const createApiRouterRequestHandler = (
 ) => {
   const corsHeaders = corsToHeaders(cors);
 
-  async (request: Request): Promise<Response | undefined> => {
+  return async (request: Request): Promise<Response | undefined> => {
     const url = new URL(request.url);
 
     const matchedRoute = router.match(request.method, url.pathname);
