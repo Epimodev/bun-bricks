@@ -111,7 +111,7 @@ const getApiPaths = async (rootFolder: string): Promise<string[]> => {
     if (pathStat.isFile()) {
       const fileName = path.split("/").pop() ?? "";
       if (fileName.startsWith("_") || !fileName.endsWith(".ts")) {
-        return acc;
+        return aggregatePaths(rest, acc);
       }
 
       const modulePath = path.slice(0, -3); // remove .ts extension
