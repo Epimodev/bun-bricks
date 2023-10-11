@@ -1,5 +1,6 @@
 import k from "kleur";
-import { decodeSearch, parseCookies, parseJsonSafe } from "./requestUtils";
+import { CorsOptions, corsToHeaders } from "./cors";
+import { HttpMethod, decodeSearch, parseCookies, parseJsonSafe } from "./requestUtils";
 import { ApiHandler, RequestInputs } from "./types";
 
 /* ========================================================== */
@@ -24,8 +25,6 @@ export type GetPathParams<Path extends string, Parts = NonEmptySplit<Path, "/">>
     : GetPathParams<Path, Tail>
   : {};
 /* ========================================================= */
-
-type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 
 type ApiRouterConfig<Routes extends string> = {
   [Route in Routes]: Partial<Record<HttpMethod, ApiHandler<GetPathParams<Route>>>>;
@@ -118,8 +117,13 @@ export const createApiRouter = <Route extends string = string>(
   };
 };
 
-export const createApiRouterRequestHandler =
-  (router: ApiRouter, publish: (channel: string, message: string) => number) =>
+export const createApiRouterRequestHandler = (
+  router: ApiRouter,
+  cors: CorsOptions,
+  publish: (channel: string, message: string) => number,
+) => {
+  const corsHeaders = corsToHeaders(cors);
+
   async (request: Request): Promise<Response | undefined> => {
     const url = new URL(request.url);
 
@@ -149,7 +153,9 @@ export const createApiRouterRequestHandler =
       headers: {
         "content-type": "application/json",
         ...output.headers,
+        ...corsHeaders,
       },
       status: output.status ?? 200,
     });
   };
+};

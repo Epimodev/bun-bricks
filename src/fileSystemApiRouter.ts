@@ -1,6 +1,7 @@
 import k from "kleur";
 import { readdir, stat } from "node:fs/promises";
 import { resolve } from "node:path";
+import { CorsOptions, corsToHeaders } from "./cors";
 import { decodeSearch, parseCookies, parseJsonSafe } from "./requestUtils";
 import { ApiHandler, RequestInputs } from "./types";
 
@@ -62,8 +63,13 @@ export const createFileSystemApiRouter = async ({
   };
 };
 
-export const createFileSystemApiRouterRequestHandler =
-  (router: FileSystemApiRouter, publish: (channel: string, message: string) => number) =>
+export const createFileSystemApiRouterRequestHandler = (
+  router: FileSystemApiRouter,
+  cors: CorsOptions,
+  publish: (channel: string, message: string) => number,
+) => {
+  const corsHeaders = corsToHeaders(cors);
+
   async (request: Request): Promise<Response | undefined> => {
     const url = new URL(request.url);
 
@@ -93,10 +99,12 @@ export const createFileSystemApiRouterRequestHandler =
       headers: {
         "content-type": "application/json",
         ...output.headers,
+        ...corsHeaders,
       },
       status: output.status ?? 200,
     });
   };
+};
 
 const getApiPaths = async (rootFolder: string): Promise<string[]> => {
   const aggregatePaths = async (paths: string[], acc: string[] = []): Promise<string[]> => {
