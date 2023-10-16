@@ -7,6 +7,7 @@ export type RequestInputs<PathParams = Record<string, string>> = {
   body: Json;
   cookies: Record<string, string>;
   headers: Headers;
+  extra: unknown;
   publish: (channel: string, message: string) => number;
 };
 

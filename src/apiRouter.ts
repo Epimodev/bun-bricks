@@ -145,6 +145,8 @@ export const createApiRouterRequestHandler = (
       cookies,
       headers: request.headers,
       publish,
+      // @ts-expect-error use this field to get data from previous handlers
+      extra: request._extra,
     };
 
     const output = await matchedRoute.handler(inputs);
