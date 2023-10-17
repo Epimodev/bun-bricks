@@ -1,3 +1,5 @@
+import { BunFile } from "bun";
+
 type Literal = string | number | boolean | null;
 type Json = Literal | { [key: string]: Json } | Json[];
 
@@ -19,4 +21,4 @@ export type HandlerOutput = {
 
 export type ApiHandler<PathParams = Record<string, string>> = (
   request: RequestInputs<PathParams>,
-) => HandlerOutput | Promise<HandlerOutput>;
+) => HandlerOutput | Promise<HandlerOutput> | BunFile | Promise<BunFile>;

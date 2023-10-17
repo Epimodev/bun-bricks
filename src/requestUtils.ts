@@ -1,4 +1,10 @@
+import { BunFile } from "bun";
+import { HandlerOutput } from "./types";
+
 export type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE" | "OPTIONS";
+
+export const isBunFile = (value: HandlerOutput | BunFile): value is BunFile =>
+  value instanceof Blob;
 
 export const parseJsonSafe = async (request: Request): Promise<any> => {
   try {

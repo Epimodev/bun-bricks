@@ -1,6 +1,6 @@
 import k from "kleur";
 import { CorsOptions, corsToHeaders } from "./cors";
-import { HttpMethod, decodeSearch, parseCookies, parseJsonSafe } from "./requestUtils";
+import { HttpMethod, decodeSearch, isBunFile, parseCookies, parseJsonSafe } from "./requestUtils";
 import { ApiHandler, RequestInputs } from "./types";
 
 /* ========================================================== */
@@ -150,6 +150,10 @@ export const createApiRouterRequestHandler = (
     };
 
     const output = await matchedRoute.handler(inputs);
+
+    if (isBunFile(output)) {
+      return new Response(output);
+    }
 
     return new Response(JSON.stringify(output.body), {
       headers: {

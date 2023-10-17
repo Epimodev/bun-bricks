@@ -2,7 +2,7 @@ import k from "kleur";
 import { readdir, stat } from "node:fs/promises";
 import { resolve } from "node:path";
 import { CorsOptions, corsToHeaders } from "./cors";
-import { decodeSearch, parseCookies, parseJsonSafe } from "./requestUtils";
+import { decodeSearch, isBunFile, parseCookies, parseJsonSafe } from "./requestUtils";
 import { ApiHandler, RequestInputs } from "./types";
 
 type FileSystemApiRouterParams = {
@@ -96,6 +96,10 @@ export const createFileSystemApiRouterRequestHandler = (
     };
 
     const output = await matchedRoute.handler(inputs);
+
+    if (isBunFile(output)) {
+      return new Response(output);
+    }
 
     return new Response(JSON.stringify(output.body), {
       headers: {
