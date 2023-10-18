@@ -128,7 +128,7 @@ const server = Bun.serve({
   async fetch(request) {
     // returns response with file content if file exists
     // returns undefined if file doesn't exist
-    const response = handleStaticFiles("src/static")(request);
+    const response = handleStaticFiles({ dir: "src/static" })(request);
     return response ?? new Response("Not found", { status: 404 });
   },
   websocket: {
@@ -210,6 +210,6 @@ const apiRouter = await createFileSystemApiRouter({
 });
 const handleRequest = combineHandlers(
   createApiRouterRequestHandler(apiRouter, () => 0),
-  handleStaticFiles("src/static"),
+  handleStaticFiles({ dir: "src/static" }),
 );
 ```
